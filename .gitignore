@@ -1,0 +1,8 @@
+# Dependances installees par npm install
+node_modules/
+
+# Rapports de couverture eventuels
+coverage/
+
+# Logs npm
+npm-debug.log*
