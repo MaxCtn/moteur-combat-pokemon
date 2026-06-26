@@ -32,11 +32,12 @@ Pour le montrer en live : commente le contenu d'une fonction de `src/`, lance
 | `tests/exceptions.test.js` | `toThrow` (règle `expect(() => ...)`) | `src/combat.js` | robustesse (attaque invalide) |
 | `tests/hooks.test.js` | `beforeEach`, `afterEach` (indépendance) | `src/pokemon.js` | US-04, US-08, US-09, US-10 |
 | `tests/mocks.test.js` | `jest.fn()` (contrôler le hasard) | `src/attaque.js` | US-07 |
-| `tests/panier.test.js` | test d'une classe à état + `toThrow` | `src/panier.js` | exemple du cours |
+| `tests/sac.test.js` | test d'une classe à état + `toThrow` | `src/sac.js` | sac de dresseur |
 
-`panier.js` est l'exemple « classe à état » du cours (un sac d'objets : Potion,
-Pokeball...). Il sert à montrer les hooks, le test d'une classe et un renvoi d'erreur
-(`Prix negatif interdit`).
+`sac.js` est notre classe « à état » : un **sac de dresseur** où l'on range des objets
+empilables (Hyper Potion, Rappel, Pokeball...) avec une **capacité limitée**. Il sert à
+montrer les hooks, le test d'une classe et plusieurs renvois d'erreur (`Quantite
+invalide`, `Sac plein`, `Objet absent du sac`).
 
 ## Les règles du moteur
 
@@ -82,11 +83,11 @@ PV et KO :
 │   ├── combat.js       calculerDegats + table des types (matchers, exceptions)
 │   ├── pokemon.js      classe à état : pv, pvMax, estKO, subirDegats (hooks)
 │   ├── attaque.js      coup critique au hasard, rng injectable (mocks)
-│   └── panier.js       classe à état : sac d'objets (test de classe + erreur)
+│   └── sac.js          classe à état : sac de dresseur (test de classe + erreurs)
 └── tests/              les tests (un thème par fichier)
     ├── matchers.test.js
     ├── exceptions.test.js
     ├── hooks.test.js
     ├── mocks.test.js
-    └── panier.test.js
+    └── sac.test.js
 ```
