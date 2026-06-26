@@ -24,7 +24,7 @@ On écrit le test avant le code.
 Pour le montrer en live : commente le contenu d'une fonction de `src/`, lance
 `npm test` (rouge), puis réécris le code (vert).
 
-## Les 4 notions de la démo
+## Les notions Jest de la démo
 
 | Fichier de test | Notion Jest | Code testé | User stories |
 |---|---|---|---|
@@ -32,6 +32,11 @@ Pour le montrer en live : commente le contenu d'une fonction de `src/`, lance
 | `tests/exceptions.test.js` | `toThrow` (règle `expect(() => ...)`) | `src/combat.js` | robustesse (attaque invalide) |
 | `tests/hooks.test.js` | `beforeEach`, `afterEach` (indépendance) | `src/pokemon.js` | US-04, US-08, US-09, US-10 |
 | `tests/mocks.test.js` | `jest.fn()` (contrôler le hasard) | `src/attaque.js` | US-07 |
+| `tests/panier.test.js` | test d'une classe à état + `toThrow` | `src/panier.js` | exemple du cours |
+
+`panier.js` est l'exemple « classe à état » du cours (un sac d'objets : Potion,
+Pokeball...). Il sert à montrer les hooks, le test d'une classe et un renvoi d'erreur
+(`Prix negatif interdit`).
 
 ## Les règles du moteur
 
@@ -76,10 +81,12 @@ PV et KO :
 ├── src/                le code à tester
 │   ├── combat.js       calculerDegats + table des types (matchers, exceptions)
 │   ├── pokemon.js      classe à état : pv, pvMax, estKO, subirDegats (hooks)
-│   └── attaque.js      coup critique au hasard, rng injectable (mocks)
-└── tests/              les tests (une notion par fichier)
+│   ├── attaque.js      coup critique au hasard, rng injectable (mocks)
+│   └── panier.js       classe à état : sac d'objets (test de classe + erreur)
+└── tests/              les tests (un thème par fichier)
     ├── matchers.test.js
     ├── exceptions.test.js
     ├── hooks.test.js
-    └── mocks.test.js
+    ├── mocks.test.js
+    └── panier.test.js
 ```
