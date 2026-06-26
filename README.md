@@ -1,126 +1,85 @@
-# Moteur de combat (type Pokémon) - Tests unitaires Jest
+# Moteur de combat Pokémon — Tests unitaires Jest
 
-[![tests](https://github.com/MaxCtn/moteur-combat-pokemon/actions/workflows/tests.yml/badge.svg)](https://github.com/MaxCtn/moteur-combat-pokemon/actions/workflows/tests.yml)
+Petit moteur de combat type Pokémon (Node.js, CommonJS) testé avec Jest. Le code et
+les tests reprennent nos user stories (US-01 à US-10), organisés à la manière de la
+démo du cours : un thème Jest par fichier de test. Que des tests unitaires.
 
-Petit moteur de combat inspiré de Pokémon, écrit en Node.js (CommonJS), avec une suite de tests unitaires Jest. Chaque test correspond à une fiche de test (Test 01 à Test 10), elle-même reliée à une user story (US-01 à US-10).
-
-Projet réalisé dans le cadre du cours "Tests et tests unitaires" (Ynov), par Contino et Veysseyre.
-
-## Installation
+## Démarrage
 
 ```bash
-npm install
+npm install          # installe Jest
+npm test             # lance les tests
+npm run test:watch   # relance à chaque modification (mode dev)
+npm run test:cov     # avec le rapport de couverture
 ```
 
-La seule dépendance est Jest, en devDependency. Le moteur n'a aucune dépendance d'exécution.
+## La démarche : test d'abord, code après (TDD)
 
-## Lancer les tests
+On écrit le test avant le code.
 
-```bash
-npm test
-```
+1. **RED** — on écrit le test, on le lance : il échoue (le code n'existe pas encore).
+2. **GREEN** — on écrit le minimum de code pour le faire passer.
+3. **REFACTOR** — on nettoie, les tests garantissent qu'on ne casse rien.
 
-Résultat attendu :
+Pour le montrer en live : commente le contenu d'une fonction de `src/`, lance
+`npm test` (rouge), puis réécris le code (vert).
 
-```text
-PASS  tests/combat.test.js
-  Fiches de test - Moteur de combat
-    ok Test 01 - Degats de base (efficacite neutre)
-    ok Test 02 - Attaque super efficace (faiblesse)
-    ok Test 03 - Attaque peu efficace (resistance)
-    ok Test 04 - Attaque sans effet (immunite)
-    ok Test 05 - Cumul des types (double faiblesse)
-    ok Test 06 - Bonus de meme type (STAB)
-    ok Test 07 - Coup critique
-    ok Test 08 - Application des degats aux PV
-    ok Test 09 - Mise KO a 0 PV
-    ok Test 10 - Les PV ne deviennent jamais negatifs
+## Les 4 notions de la démo
 
-Test Suites: 1 passed, 1 total
-Tests:       10 passed, 10 total
-```
+| Fichier de test | Notion Jest | Code testé | User stories |
+|---|---|---|---|
+| `tests/matchers.test.js` | `toBe`, `toEqual`, `toContain`, `not` | `src/combat.js`, `src/pokemon.js` | US-01, US-02, US-03, US-05, US-06 |
+| `tests/exceptions.test.js` | `toThrow` (règle `expect(() => ...)`) | `src/combat.js` | robustesse (attaque invalide) |
+| `tests/hooks.test.js` | `beforeEach`, `afterEach` (indépendance) | `src/pokemon.js` | US-04, US-08, US-09, US-10 |
+| `tests/mocks.test.js` | `jest.fn()` (contrôler le hasard) | `src/attaque.js` | US-07 |
 
-Les tests sont aussi rejoués automatiquement à chaque push via GitHub Actions (voir `.github/workflows/tests.yml`).
-
-## Structure du projet
-
-```
-.
-├── package.json            config npm + script "test": "jest"
-├── README.md
-├── .github/workflows/
-│   └── tests.yml           CI : npm ci puis npm test à chaque push / PR
-├── src/
-│   ├── degats.js           calculerDegats(...) : formule + bornes (min 1, immunité = 0)
-│   ├── pokemon.js          classe Pokemon : pv, pvMax, estKO, subirDegats(...)
-│   └── typeChart.js        TABLE_DES_TYPES + multiplicateurDeType(...)  (bonus)
-└── tests/
-    └── combat.test.js      les 10 tests (un par fiche de test)
-```
-
-## Règles métier
+## Les règles du moteur
 
 Calcul des dégâts :
 
 ```
-dégâts = arrondi_inférieur( dégâtsBase x multType x multSTAB x multCritique )
+dégâts = arrondi_inférieur( base x multType x multSTAB x multCritique )
 ```
 
-- multSTAB = 1.5 si l'attaque est du même type que l'attaquant, sinon 1
-- multCritique = 1.5 s'il y a coup critique, sinon 1
-- Multiplicateurs de type : faiblesse = x2, résistance = x0.5, immunité = x0, neutre = x1
-- Double type : produit des deux multiplicateurs (ex : x2 * x2 = x4)
-- Si multType > 0 (pas d'immunité) : les dégâts sont au minimum de 1
-- Si multType = 0 (immunité) : les dégâts valent exactement 0 (le minimum ne s'applique pas)
-- Arrondi inférieur (Math.floor)
+- STAB (même type que l'attaquant) : x1.5 — sinon x1
+- Critique : x1.5 — sinon x1
+- Type : faiblesse x2, résistance x0.5, immunité x0, neutre x1
+- Double type : produit des deux multiplicateurs (x2 * x2 = x4)
+- Pas d'immunité : minimum 1 dégât. Immunité (x0) : exactement 0.
 
 PV et KO :
 
-- Les PV restent dans l'intervalle [0 ; PV_max] et ne deviennent jamais négatifs
-- PV = 0 : le Pokémon est KO
-- Un Pokémon KO ne peut plus être ciblé
+- Les PV restent dans `[0 ; PV_max]`, jamais négatifs.
+- À 0 PV le Pokémon est KO et ne peut plus être ciblé.
 
-## Correspondance fiches de test / user stories
+## Correspondance user stories
 
-| Fiche   | US     | Intitulé                              | Entrée                                | Résultat attendu        |
-| ------- | ------ | ------------------------------------- | ------------------------------------- | ----------------------- |
-| Test 01 | US-01  | Dégâts de base (efficacité neutre)    | base 50, multType 1                   | 50 dégâts               |
-| Test 02 | US-02  | Attaque super efficace (faiblesse)    | base 50, multType 2                   | 100 dégâts              |
-| Test 03 | US-03  | Attaque peu efficace (résistance)     | base 50, multType 0.5                 | 25 dégâts               |
-| Test 04 | US-04  | Attaque sans effet (immunité)         | base 50, multType 0, défenseur 100 PV | 0 dégât, reste à 100 PV |
-| Test 05 | US-05  | Cumul des types (double faiblesse)    | base 50, multType 4                   | 200 dégâts              |
-| Test 06 | US-06  | Bonus de même type (STAB)             | base 50, multType 1, STAB actif       | 75 dégâts               |
-| Test 07 | US-07  | Coup critique                         | base 50, multType 1, critique         | 75 dégâts               |
-| Test 08 | US-08  | Application des dégâts aux PV         | défenseur 100 PV, 30 dégâts           | 70 PV                   |
-| Test 09 | US-09  | Mise KO à 0 PV                        | défenseur 50 PV, 50 dégâts            | 0 PV et estKO = true    |
-| Test 10 | US-10  | Les PV ne deviennent jamais négatifs  | défenseur 20 PV, 999 dégâts           | 0 PV (pas négatif) + KO |
+| US    | Règle                                   | Vérifiée dans            |
+|-------|-----------------------------------------|--------------------------|
+| US-01 | Dégâts de base (neutre)                 | `matchers.test.js`       |
+| US-02 | Super efficace (faiblesse x2)           | `matchers.test.js`       |
+| US-03 | Peu efficace (résistance x0.5)          | `matchers.test.js`       |
+| US-04 | Sans effet (immunité x0)                | `hooks.test.js`          |
+| US-05 | Cumul des types (double faiblesse x4)   | `matchers.test.js`       |
+| US-06 | Bonus de même type (STAB)               | `matchers.test.js`       |
+| US-07 | Coup critique                           | `mocks.test.js`          |
+| US-08 | Application des dégâts aux PV            | `hooks.test.js`          |
+| US-09 | Mise KO à 0 PV                          | `hooks.test.js`          |
+| US-10 | Les PV ne deviennent jamais négatifs    | `hooks.test.js`          |
 
-## API
+## Structure des fichiers
 
-```js
-const { calculerDegats } = require("./src/degats");
-const { Pokemon } = require("./src/pokemon");
-const { multiplicateurDeType, TABLE_DES_TYPES } = require("./src/typeChart");
-
-// Dégâts d'une attaque
-calculerDegats({ degatsBase: 50, multType: 2 });               // 100  (faiblesse)
-calculerDegats({ degatsBase: 50, multType: 1, stab: true });   // 75   (STAB)
-calculerDegats({ degatsBase: 50, multType: 0 });               // 0    (immunité)
-
-// Multiplicateur de type via la table (bonus)
-multiplicateurDeType("eau", ["roche", "sol"], TABLE_DES_TYPES); // 4   (double faiblesse)
-
-// PV et KO
-const pikachu = new Pokemon({ nom: "Pikachu", pvMax: 100, types: ["electrik"] });
-pikachu.subirDegats(30);
-pikachu.pv;    // 70
-pikachu.estKO; // false
 ```
-
-## Démarche
-
-Le projet a été construit en TDD : on écrit d'abord les 10 tests à partir des fiches, on les exécute pour les voir échouer (le moteur n'existe pas encore), puis on implémente le moteur jusqu'à ce que tous les tests passent.
-
-## Licence
-
-MIT, voir le fichier LICENSE.
+.
+├── package.json        scripts + dépendance jest
+├── jest.config.js      config (testEnvironment, clearMocks, verbose)
+├── src/                le code à tester
+│   ├── combat.js       calculerDegats + table des types (matchers, exceptions)
+│   ├── pokemon.js      classe à état : pv, pvMax, estKO, subirDegats (hooks)
+│   └── attaque.js      coup critique au hasard, rng injectable (mocks)
+└── tests/              les tests (une notion par fichier)
+    ├── matchers.test.js
+    ├── exceptions.test.js
+    ├── hooks.test.js
+    └── mocks.test.js
+```

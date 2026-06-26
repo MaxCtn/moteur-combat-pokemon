@@ -1,20 +1,14 @@
 {
   "name": "moteur-combat-pokemon",
   "version": "1.0.0",
-  "description": "Petit moteur de combat type Pokemon (calcul de degats, PV, KO) + tests unitaires Jest.",
-  "main": "src/degats.js",
+  "description": "Moteur de combat Pokemon teste avec Jest (matchers, exceptions, hooks, mocks)",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
   },
-  "keywords": [
-    "pokemon",
-    "combat",
-    "jest",
-    "tests-unitaires"
-  ],
-  "author": "Contino / Veysseyre",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^30.0.0"
   }
 }
