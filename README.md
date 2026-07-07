@@ -1,3 +1,42 @@
+# Rendu 3 — Tests E2E d'un HUD de combat Pokémon (Cypress)
+
+**Groupe : Maxime CONTINO**
+
+Ce rendu est le sommet de la pyramide des tests. On sert un front « HUD de combat »
+depuis l'API Express, puis on écrit des tests système (E2E) avec Cypress : un vrai
+navigateur ouvre la page, clique sur « Attaquer » et vérifie ce que voit
+l'utilisateur (PV, tour, journal, bannière KO). Les tests unitaires (Jest) et
+d'intégration (Supertest) des rendus précédents restent verts.
+
+## Installation et lancement
+
+```bash
+npm install        # installe les dépendances (Express, Jest, Supertest, Cypress...)
+npm start          # lance l'app sur http://localhost:3000 (le HUD est servi à la racine)
+npm test           # tests unitaires + intégration (Jest, Supertest)
+npm run test:e2e   # démarre le serveur, joue les tests Cypress en headless, puis arrête tout
+npm run cy:open    # ouvre l'interface Cypress (mode interactif)
+```
+
+## Le HUD de combat (`public/`)
+
+Une page en JavaScript vanilla (aucun framework) servie en statique par
+`src/app.js` via `express.static("public")`. Deux combattants fixes : Salamèche
+(feu) contre Bulbizarre (plante), 100 PV chacun. Le bouton « Attaquer » envoie
+`POST /combat/degats` avec `{ type, cible, base }`, retire les dégâts renvoyés aux
+PV de la cible, incrémente le tour et écrit dans le journal (« Super efficace »,
+« Efficace » ou « Pas très efficace »). À 0 PV, la bannière « KO » apparaît. Une
+réponse d'erreur (400) ne change rien à l'écran.
+
+## Les tests E2E (`cypress/e2e/hud.cy.js`)
+
+Cinq scénarios : état initial, attaque nominale (avec observation de la vraie
+requête), mise KO (réponse stubbée), erreur 400 (l'écran ne bouge pas) et contrat
+d'API (on vérifie le corps exact envoyé au serveur). La commande personnalisée
+`cy.attaquer(base)` est définie dans `cypress/support/e2e.js`.
+
+---
+
 # Rendu 2 — API Pokémon & tests d'intégration (Supertest)
 
 **Auteur : Maxime CONTINO**

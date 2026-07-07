@@ -17,6 +17,7 @@ resetPokedex();
 
 const app = express();
 app.use(express.json());
+app.use(express.static("public"));
 
 app.get("/pokemons", (req, res) => {
   res.status(200).json(pokedex);

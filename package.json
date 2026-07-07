@@ -3,15 +3,21 @@
   "version": "1.0.0",
   "description": "Moteur de combat Pokemon teste avec Jest (matchers, exceptions, hooks, mocks)",
   "scripts": {
+    "start": "node src/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "test:e2e": "start-server-and-test start http://localhost:3000 cy:run"
   },
   "author": "Maxime CONTINO",
   "license": "MIT",
   "devDependencies": {
+    "cypress": "^15.18.0",
     "jest": "^30.0.0",
+    "start-server-and-test": "^2.1.5",
     "supertest": "^7.2.2"
   },
   "dependencies": {

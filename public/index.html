@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HUD de combat Pokémon</title>
+    <style>
+      :root {
+        --fond: #0f172a;
+        --panneau: #1e293b;
+        --bord: #334155;
+        --texte: #e2e8f0;
+        --doux: #94a3b8;
+        --feu: #f97316;
+        --plante: #22c55e;
+        --vie: #38bdf8;
+        --danger: #ef4444;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: var(--texte);
+        background: radial-gradient(circle at top, #1e293b, var(--fond));
+        display: flex;
+        justify-content: center;
+        padding: 32px 16px;
+      }
+      .arene {
+        width: 100%;
+        max-width: 720px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+      .tour {
+        margin: 0;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--doux);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .combattants {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .combattant {
+        background: var(--panneau);
+        border: 1px solid var(--bord);
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .combattant header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .nom {
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .type {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        color: #0f172a;
+      }
+      .type-feu {
+        background: var(--feu);
+      }
+      .type-plante {
+        background: var(--plante);
+      }
+      .barre {
+        height: 12px;
+        border-radius: 999px;
+        background: #0f172a;
+        overflow: hidden;
+      }
+      .barre-remplissage {
+        height: 100%;
+        width: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--vie), #22d3ee);
+        transition: width 0.35s ease;
+      }
+      .pv {
+        margin: 0;
+        font-size: 20px;
+        font-variant-numeric: tabular-nums;
+      }
+      .pv strong {
+        font-size: 26px;
+      }
+      .pv .max {
+        color: var(--doux);
+        font-size: 15px;
+      }
+      .controles {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 12px;
+        background: var(--panneau);
+        border: 1px solid var(--bord);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .champ {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--doux);
+        font-weight: 600;
+      }
+      .champ input {
+        width: 110px;
+        padding: 10px 12px;
+        font-size: 16px;
+        border-radius: 10px;
+        border: 1px solid var(--bord);
+        background: #0f172a;
+        color: var(--texte);
+      }
+      .btn {
+        flex: 1;
+        min-width: 130px;
+        padding: 12px 16px;
+        font-size: 15px;
+        font-weight: 700;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.1s ease, opacity 0.2s ease;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn-attaque {
+        background: var(--feu);
+        color: #0f172a;
+      }
+      .btn-attaque:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .btn-recommencer {
+        background: transparent;
+        color: var(--texte);
+        border: 1px solid var(--bord);
+      }
+      .banniere {
+        text-align: center;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 16px;
+        border-radius: 14px;
+        background: var(--danger);
+        color: #0f172a;
+      }
+      .hidden {
+        display: none;
+      }
+      .journal-bloc {
+        background: var(--panneau);
+        border: 1px solid var(--bord);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .journal-bloc h2 {
+        margin: 0 0 12px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--doux);
+      }
+      .journal {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .journal li {
+        font-size: 14px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #0f172a;
+        border: 1px solid var(--bord);
+      }
+      @media (max-width: 520px) {
+        .combattants {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="arene">
+      <h1>Combat en cours</h1>
+      <p class="tour" data-cy="tour">Tour 1</p>
+
+      <section class="combattants">
+        <article class="combattant">
+          <header>
+            <span class="nom">Salamèche</span>
+            <span class="type type-feu">feu</span>
+          </header>
+          <div class="barre"><div class="barre-remplissage" id="barre-attaquant"></div></div>
+          <p class="pv"><strong data-cy="attaquant-hp">100</strong> <span class="max">/ 100</span></p>
+        </article>
+
+        <article class="combattant">
+          <header>
+            <span class="nom">Bulbizarre</span>
+            <span class="type type-plante">plante</span>
+          </header>
+          <div class="barre"><div class="barre-remplissage" id="barre-cible"></div></div>
+          <p class="pv"><strong data-cy="cible-hp">100</strong> <span class="max">/ 100</span></p>
+        </article>
+      </section>
+
+      <section class="controles">
+        <label class="champ">
+          Puissance de base
+          <input type="number" data-cy="base-input" value="20" min="0" />
+        </label>
+        <button type="button" class="btn btn-attaque" data-cy="btn-attaque">Attaquer</button>
+        <button type="button" class="btn btn-recommencer" data-cy="btn-recommencer">Recommencer</button>
+      </section>
+
+      <div class="banniere hidden" data-cy="banniere"></div>
+
+      <section class="journal-bloc">
+        <h2>Journal de combat</h2>
+        <ul class="journal" data-cy="journal"></ul>
+      </section>
+    </main>
+
+    <script src="/hud.js"></script>
+  </body>
+</html>
