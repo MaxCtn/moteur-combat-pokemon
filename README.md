@@ -1,3 +1,41 @@
+# Rendu 2 — API Pokémon & tests d'intégration (Supertest)
+
+**Auteur : Maxime CONTINO**
+
+Ce rendu ajoute une petite API Express au-dessus du moteur de combat et teste ses
+routes avec Supertest. On garde les tests unitaires Jest existants et on ajoute un
+niveau au-dessus : les tests d'intégration, qui vérifient le code de statut HTTP et
+le corps de chaque réponse.
+
+## Lancer les tests
+
+```bash
+npm install     # installe Jest, Supertest, Express
+npm test        # lance tous les tests (unitaires + intégration API)
+npm run dev     # lance l'API en local sur le port 3000
+```
+
+## L'API (`src/app.js`)
+
+Un store Pokémon en mémoire (remis à zéro entre chaque test via `resetPokedex`).
+
+| Méthode | Route | Réponse |
+|---|---|---|
+| GET  | `/pokemons`      | `200` + tableau des Pokémon |
+| GET  | `/pokemons/:id`  | `200` + le Pokémon, ou `404` `{ erreur: "Pokemon introuvable" }` |
+| POST | `/pokemons`      | `201` si `{ id, nom, type }` valide, sinon `400` |
+| POST | `/combat/degats` | `200` + `{ degats }` si `{ type, cible, base }` valide, sinon `400` |
+
+`/combat/degats` réutilise `multiplicateurDeType` + `calculerDegats` de `src/combat.js`.
+Exemple : `{ type: "feu", cible: "plante", base: 20 }` → `{ degats: 40 }` (feu bat plante ×2).
+
+`src/app.js` exporte `{ app, resetPokedex }` sans `listen`. Le `listen` est isolé dans
+`src/server.js`, ce qui permet à Supertest d'importer l'app sans démarrer de serveur.
+
+Les tests d'intégration sont dans `tests/api.test.js`.
+
+---
+
 # Moteur de combat Pokémon — Tests unitaires Jest
 
 Petit moteur de combat type Pokémon (Node.js, CommonJS) testé avec Jest. Le code et
