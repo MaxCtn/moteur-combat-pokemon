@@ -1,7 +1,5 @@
 # Moteur de combat Pokémon
 
-[![tests](https://github.com/MaxCtn/moteur-combat-pokemon/actions/workflows/tests.yml/badge.svg)](https://github.com/MaxCtn/moteur-combat-pokemon/actions/workflows/tests.yml)
-
 Un petit moteur de combat façon Pokémon en Node.js, construit pour le cours de tests de Ynov avec Léo Veysseyre. Le projet a été rendu en trois étapes qui montent la pyramide des tests : tests unitaires avec Jest, tests d'intégration d'une API Express avec Supertest, puis tests de bout en bout d'une interface avec Cypress.
 
 ## Lancer le projet
